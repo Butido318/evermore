@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>獎金試算表</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="LOGO" class="logo" />
+    <h1>獎金試算表</h1>
+    <nav>
+      <a href="schedule.html">前往排班頁面</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <label>輸入時數：<input type="number" id="hours" /></label><br />
+      <label>輸入鑽石數：<input type="number" id="diamonds" /></label><br />
+      <button onclick="calculate()">計算獎金</button>
+    </section>
+    <section id="results"></section>
+  </main>
+  <script>
+    function calculate() {
+      const h = Number(document.getElementById("hours").value);
+      const d = Number(document.getElementById("diamonds").value);
+      const diamondUnit = 0.27;
+      const tiersH = [10, 20, 30], bonusH = [100, 200, 300];
+      const tiersD = [30000, 50000, 80000], bonusD = [300, 500, 1000];
+      const percentByHour = h >= 30 ? 0.35 : h >= 20 ? 0.3 : h >= 10 ? 0.25 : 0.2;
+      const percentByDiamond = d >= 80000 ? 0.35 : d >= 50000 ? 0.3 : d >= 30000 ? 0.25 : 0.2;
+      const percent = Math.max(percentByHour, percentByDiamond);
+      const salaryA = d * diamondUnit * percent;
+      const bonusB = h >= 30 ? 300 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
+      const bonusC = d >= 80000 ? 1000 : d >= 50000 ? 500 : d >= 30000 ? 300 : 0;
+      const total = salaryA + bonusB + bonusC;
+      document.getElementById("results").innerHTML = `
+        <p>薪資A：$${salaryA.toFixed(2)}</p>
+        <p>獎金B：$${bonusB}</p>
+        <p>獎金C：$${bonusC}</p>
+        <hr />
+        <p><strong>總計：$${total.toFixed(2)}</strong></p>
+      `;
+    }
+  </script>
+</body>
+</html>
