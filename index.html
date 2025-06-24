@@ -22,6 +22,62 @@
       <button onclick="calculate()">計算獎金</button>
     </section>
     <section id="results"></section>
+<!-- 對照表展開按鈕 -->
+<button onclick="toggleBonusTable()" style="margin-top: 1rem;">查看提成與獎金對照表</button>
+
+<!-- 對照表內容（預設隱藏） -->
+<div id="bonusTable" style="display: none; margin-top: 1rem; border: 1px solid #ccc; padding: 1rem; border-radius: 8px; background: #f9f9f9;">
+  <h3>薪資 A 提成對照表</h3>
+  <table>
+    <thead><tr><th>時數</th><th>提成%</th></tr></thead>
+    <tbody>
+      <tr><td>0–25 小時</td><td>45%</td></tr>
+      <tr><td>26–40 小時</td><td>65%</td></tr>
+      <tr><td>41–60 小時</td><td>75%</td></tr>
+      <tr><td>61 小時以上</td><td>85%</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:1rem;">鑽石提成對照表</h3>
+  <table>
+    <thead><tr><th>鑽石數</th><th>提成%</th></tr></thead>
+    <tbody>
+      <tr><td>0–10,000</td><td>45%</td></tr>
+      <tr><td>10,001–20,000</td><td>65%</td></tr>
+      <tr><td>20,001–50,000</td><td>75%</td></tr>
+      <tr><td>50,001 以上</td><td>85%</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:1rem;">獎金 B 對照表（時數）</h3>
+  <table>
+    <thead><tr><th>時數</th><th>獎金金額</th></tr></thead>
+    <tbody>
+      <tr><td>≧ 30</td><td>$350</td></tr>
+      <tr><td>≧ 20</td><td>$200</td></tr>
+      <tr><td>≧ 10</td><td>$100</td></tr>
+      <tr><td>&lt; 10</td><td>$0</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:1rem;">獎金 C 對照表（鑽石數）</h3>
+  <table>
+    <thead><tr><th>鑽石數</th><th>獎金金額</th></tr></thead>
+    <tbody>
+      <tr><td>≧ 80,000</td><td>$1000</td></tr>
+      <tr><td>≧ 50,000</td><td>$500</td></tr>
+      <tr><td>≧ 30,000</td><td>$300</td></tr>
+      <tr><td>&lt; 30,000</td><td>$0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+function toggleBonusTable() {
+  const table = document.getElementById("bonusTable");
+  table.style.display = (table.style.display === "none") ? "block" : "none";
+}
+</script> 
   </main>
   <script>
     function calculate() {
