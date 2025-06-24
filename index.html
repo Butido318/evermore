@@ -30,8 +30,8 @@
       const diamondUnit = 0.27;
       const tiersH = [10, 20, 30], bonusH = [100, 200, 300];
       const tiersD = [30000, 50000, 80000], bonusD = [300, 500, 1000];
-      const percentByHour = h >= 30 ? 0.35 : h >= 20 ? 0.3 : h >= 10 ? 0.25 : 0.2;
-      const percentByDiamond = d >= 80000 ? 0.35 : d >= 50000 ? 0.3 : d >= 30000 ? 0.25 : 0.2;
+      const percentByHour = h >= 61 ? 0.85 : h >= 41 ? 0.75 : h >= 26 ? 0.65 : 0.45;
+      const percentByDiamond = d >= 50001 ? 0.85 : d >= 20001 ? 0.75 : d >= 10001 ? 0.65 : 0.4;
       const percent = Math.max(percentByHour, percentByDiamond);
       const salaryA = d * diamondUnit * percent;
       const bonusB = h >= 30 ? 350 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
