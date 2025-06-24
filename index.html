@@ -34,7 +34,7 @@
       const percentByDiamond = d >= 80000 ? 0.35 : d >= 50000 ? 0.3 : d >= 30000 ? 0.25 : 0.2;
       const percent = Math.max(percentByHour, percentByDiamond);
       const salaryA = d * diamondUnit * percent;
-      const bonusB = h >= 30 ? 300 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
+      const bonusB = h >= 30 ? 350 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
       const bonusC = d >= 80000 ? 1000 : d >= 50000 ? 500 : d >= 30000 ? 300 : 0;
       const total = salaryA + bonusB + bonusC;
       document.getElementById("results").innerHTML = `
