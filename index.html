@@ -1,113 +1,22 @@
-
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>獎金試算表</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>餘聲漫漫 | 系統首頁</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; background: #f9f9f9; }
+    h1 { color: #3a3a3a; }
+    a.button {
+      display: inline-block; margin: 20px; padding: 20px 30px;
+      background: #007bff; color: white; text-decoration: none;
+      border-radius: 12px; font-size: 18px;
+    }
+    a.button.yellow { background: #fcd34d; color: #3a3a3a; }
+  </style>
 </head>
 <body>
-  <header>
-    <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
-  <img src="logo.png" alt="LOGO" style="max-width: 200px;">
-</div>
-    <h1>獎金試算表</h1>
-    <nav>
-      <a href="schedule.html">前往排班頁面</a>
-    </nav>
-  </header>
-  
-  <main>
-    
-    
-    <section>
-      <label>計算總時數：<input type="number" id="hours" /></label><br />
-      <label>累積鑽石數：<input type="number" id="diamonds" /></label><br />
-      <button onclick="calculate()">計算獎金</button>
-    </section>
-    <section id="results"></section>
-<!-- 對照表展開按鈕 -->
-<button onclick="toggleBonusTable()" style="margin-top: 1rem; background-color: #007bff; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer;">
-  查看提成與獎金對照表
-</button>
-
-<!-- 對照表內容（預設隱藏） -->
-<div id="bonusTable" style="display: none; margin-top: 1rem; border: 1px solid #ccc; padding: 1rem; border-radius: 8px; background: #f9f9f9;">
-  <h3>薪資 A 提成對照表</h3>
-  <table>
-    <thead><tr><th>時數</th><th>提成%</th></tr></thead>
-    <tbody>
-      <tr><td>0–25 小時</td><td>45%</td></tr>
-      <tr><td>26–40 小時</td><td>65%</td></tr>
-      <tr><td>41–60 小時</td><td>75%</td></tr>
-      <tr><td>61 小時以上</td><td>85%</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1rem;">鑽石提成對照表</h3>
-  <table>
-    <thead><tr><th>鑽石數</th><th>提成%</th></tr></thead>
-    <tbody>
-      <tr><td>0–10,000</td><td>45%</td></tr>
-      <tr><td>10,001–20,000</td><td>65%</td></tr>
-      <tr><td>20,001–50,000</td><td>75%</td></tr>
-      <tr><td>50,001 以上</td><td>85%</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1rem;">獎金 B 對照表（時數）</h3>
-  <table>
-    <thead><tr><th>時數</th><th>獎金金額</th></tr></thead>
-    <tbody>
-      <tr><td>≧ 30</td><td>$350</td></tr>
-      <tr><td>≧ 20</td><td>$200</td></tr>
-      <tr><td>≧ 10</td><td>$100</td></tr>
-      <tr><td>&lt; 10</td><td>$0</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1rem;">獎金 C 對照表（鑽石數）</h3>
-  <table>
-    <thead><tr><th>鑽石數</th><th>獎金金額</th></tr></thead>
-    <tbody>
-      <tr><td>≧ 80,000</td><td>$1000</td></tr>
-      <tr><td>≧ 50,000</td><td>$500</td></tr>
-      <tr><td>≧ 30,000</td><td>$300</td></tr>
-      <tr><td>&lt; 30,000</td><td>$0</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<script>
-function toggleBonusTable() {
-  const table = document.getElementById("bonusTable");
-  table.style.display = (table.style.display === "none") ? "block" : "none";
-}
-</script> 
-  </main>
-  <script>
-    function calculate() {
-      const h = Number(document.getElementById("hours").value);
-      const d = Number(document.getElementById("diamonds").value);
-      const diamondUnit = 0.27;
-      const tiersH = [10, 20, 30], bonusH = [100, 200, 350];
-      const tiersD = [30000, 50000, 80000], bonusD = [300, 500, 1000];
-      const percentByHour = h >= 61 ? 0.85 : h >= 41 ? 0.75 : h >= 26 ? 0.65 : 0.45;
-      const percentByDiamond = d >= 50001 ? 0.85 : d >= 20001 ? 0.75 : d >= 10001 ? 0.65 : 0.4;
-      const percent = Math.max(percentByHour, percentByDiamond);
-      const salaryA = d * diamondUnit * percent;
-      const bonusB = h >= 30 ? 350 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
-      const bonusC = d >= 80000 ? 1000 : d >= 50000 ? 500 : d >= 30000 ? 300 : 0;
-      const total = salaryA + bonusB + bonusC;
-      document.getElementById("results").innerHTML = `
-        <p>薪資A：$${salaryA.toFixed(2)}</p>
-        <p>獎金B：$${bonusB}</p>
-        <p>獎金C：$${bonusC}</p>
-        <hr />
-        <p><strong>總計：$${total.toFixed(2)}</strong></p>
-      `;
-    }
-  </script>
+  <h1>餘聲漫漫 系統首頁</h1>
+  <a class="button" href="bonus.html">前往獎金試算表</a>
+  <a class="button yellow" href="schedule.html">前往排班申請系統</a>
 </body>
 </html>
