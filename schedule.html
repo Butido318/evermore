@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>排班申請</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>排班系統</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <img src="logo.png" alt="LOGO" class="logo" />
     <h1>排班申請</h1>
-    <div class="nav">
-      <a href="/index.html">🏠 首頁</a>
-      <a href="/bonus.html">💰 回獎金試算表</a>
-    </div>
+    <nav>
+      <a href="index.html" class="nav-link">首頁</a>
+      <a href="schedule.html" class="nav-link">前往排班</a>
+      <a href="bonus.html" class="nav-link">回獎金試算表</a>
+    </nav>
     <marquee id="announcement">公告載入中...</marquee>
   </header>
-
   <main>
-    <label for="nameSelect">請選擇小名：</label>
-    <select id="nameSelect"><option>載入中...</option></select>
-
-    <label for="shiftSelect">我要排班：</label>
-    <select id="shiftSelect"><option>請先選擇小名</option></select>
-
-    <label for="cancelSelect">我要取消：</label>
-    <select id="cancelSelect"><option>請先選擇小名</option></select>
-
-    <button onclick="submitShift()">送出</button>
-    <div id="message"></div>
-
-    <h2>班表確認</h2>
-    <div id="scheduleTable">載入中...</div>
-
-    <h2>今天值班人數統計</h2>
-    <div id="todayStats">載入中...</div>
+    <section>
+      <h2>請選擇小名</h2>
+      <select id="nameSelect"></select>
+    </section>
+    <section>
+      <h2>我要排班</h2>
+      <select id="assignSelect"></select>
+      <button onclick="submitShift()">送出</button>
+    </section>
+    <section>
+      <h2>我要取消</h2>
+      <select id="cancelSelect"></select>
+      <button onclick="cancelShift()">取消</button>
+    </section>
+    <section>
+      <h2>確認班表</h2>
+      <div id="scheduleList">載入中...</div>
+    </section>
   </main>
-
   <script src="schedule.js"></script>
 </body>
 </html>
