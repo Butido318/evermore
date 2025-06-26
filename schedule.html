@@ -2,145 +2,41 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>排班申請 | 餘聲漫漫</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
-    h1 { color: #2c3e50; }
-    label { font-weight: bold; display: block; margin-top: 15px; }
-    select, button { padding: 10px; margin-top: 5px; width: 100%; max-width: 400px; }
-    .note { font-size: 0.9em; color: #888; margin-top: 5px; }
-    .highlight { background-color: #d1ecf1; padding: 5px; margin-top: 20px; }
-    .section { margin-top: 30px; }
-    .nav-btns { margin-top: 20px; }
-    .nav-btns a {
-      margin-right: 10px; padding: 8px 16px; background: #eee; color: #333;
-      text-decoration: none; border-radius: 6px;
-    }
-    .nav-btns a.yellow { background: #fef08a; }
-    .nav-btns a.blue { background: #93c5fd; color: #1e3a8a; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>排班申請</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>排班申請</h1>
+  <header>
+    <img src="logo.png" alt="LOGO" class="logo" />
+    <h1>排班申請</h1>
+    <div class="nav">
+      <a href="/index.html">🏠 首頁</a>
+      <a href="/bonus.html">💰 回獎金試算表</a>
+    </div>
+    <marquee id="announcement">公告載入中...</marquee>
+  </header>
 
-  <div class="nav-btns">
-    <a href="index.html">回首頁</a>
-    <a href="bonus.html" class="blue">回獎金試算表</a>
-  </div>
+  <main>
+    <label for="nameSelect">請選擇小名：</label>
+    <select id="nameSelect"><option>載入中...</option></select>
 
-  <div class="section">
-    <label for="name">請選擇小名</label>
-    <select id="name">
-      <option>（載入中⋯）</option>
-    </select>
-  </div>
+    <label for="shiftSelect">我要排班：</label>
+    <select id="shiftSelect"><option>請先選擇小名</option></select>
 
-  <div class="section">
-    <label for="shift">我要排班</label>
-    <select id="shift">
-      <option>（請先選擇小名）</option>
-    </select>
-  </div>
+    <label for="cancelSelect">我要取消：</label>
+    <select id="cancelSelect"><option>請先選擇小名</option></select>
 
-  <div class="section">
-    <label for="cancel">我要取消</label>
-    <select id="cancel">
-      <option>（請先選擇小名）</option>
-    </select>
-  </div>
+    <button onclick="submitShift()">送出</button>
+    <div id="message"></div>
 
-  <div class="section">
-    <button onclick="submitShift()">送出排班</button>
-    <button onclick="cancelShift()">取消排班</button>
-    <div class="note">＊僅能取消隔日以後班表。</div>
-  </div>
+    <h2>班表確認</h2>
+    <div id="scheduleTable">載入中...</div>
 
-  <div class="section">
-    <h3>📋 班表查詢（今日以後）</h3>
-    <div id="scheduleList">載入中⋯</div>
-  </div>
+    <h2>今天值班人數統計</h2>
+    <div id="todayStats">載入中...</div>
+  </main>
 
-  <div class="section">
-    <h3>📢 公告欄</h3>
-    <div id="announcement">載入中⋯</div>
-  </div>
-
-  <div class="section">
-    <h3>📊 今天值班人數統計</h3>
-    <div id="todayStats">載入中⋯</div>
-  </div>
-
-  <script>
-    const API_BASE = "https://script.google.com/macros/s/AKfycbyu9QQgTe_06-DcKHGHv4YFQfc_42lf9V186cu6ZTPkMWuswTiQLW0vpEAs0OznyWAUAA/exec";
-
-    async function loadNames() {
-      const res = await fetch(API_BASE + "?action=names");
-      const data = await res.json();
-      const select = document.getElementById("name");
-      select.innerHTML = data.map(n => `<option value="${n}">${n}</option>`).join("");
-      loadShifts();
-    }
-
-    async function loadShifts() {
-      const name = document.getElementById("name").value;
-      if (!name) return;
-      const res = await fetch(API_BASE + "?action=shifts&name=" + encodeURIComponent(name));
-      const data = await res.json();
-      document.getElementById("shift").innerHTML =
-        data.available.map(opt => `<option value="${opt}">${opt}</option>`).join("") || "<option>無可排時段</option>";
-      document.getElementById("cancel").innerHTML =
-        data.booked.map(opt => `<option value="${opt}">${opt}</option>`).join("") || "<option>無可取消時段，請洽廳主</option>";
-      loadSchedule();
-      loadTodayStats();
-    }
-
-    async function submitShift() {
-      const name = document.getElementById("name").value;
-      const shift = document.getElementById("shift").value;
-      const res = await fetch(API_BASE, {
-        method: "POST",
-        body: JSON.stringify({ action: "submit", name, shift })
-      });
-      const msg = await res.text();
-      alert(msg);
-      loadShifts();
-    }
-
-    async function cancelShift() {
-      const name = document.getElementById("name").value;
-      const shift = document.getElementById("cancel").value;
-      const res = await fetch(API_BASE, {
-        method: "POST",
-        body: JSON.stringify({ action: "cancel", name, shift })
-      });
-      const msg = await res.text();
-      alert(msg);
-      loadShifts();
-    }
-
-    async function loadSchedule() {
-      const res = await fetch(API_BASE + "?action=schedule");
-      const html = await res.text();
-      document.getElementById("scheduleList").innerHTML = html;
-    }
-
-    async function loadTodayStats() {
-      const res = await fetch(API_BASE + "?action=todayStats");
-      const html = await res.text();
-      document.getElementById("todayStats").innerHTML = html;
-    }
-
-    async function loadAnnouncement() {
-      const res = await fetch(API_BASE + "?action=announcement");
-      const html = await res.text();
-      document.getElementById("announcement").innerHTML = html;
-    }
-
-    document.getElementById("name").addEventListener("change", loadShifts);
-    window.onload = () => {
-      loadNames();
-      loadAnnouncement();
-    }
-  </script>
+  <script src="schedule.js"></script>
 </body>
 </html>
