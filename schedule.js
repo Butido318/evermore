@@ -35,7 +35,57 @@ async function init() {
   renderAnnouncement(announcement);
 
   nicknameSelect.addEventListener("change", () => {
-    updateScheduleOptions(scheduleData, limits, records);
+    updateScheduleOptions(scheduleData, limits, records)
+{
+  const nameSelect = document.getElementById('name');
+  const scheduleSelect = document.getElementById('schedule');
+  const selectedName = nameSelect.value;
+
+  if (!selectedName) return;
+
+  scheduleSelect.innerHTML = '<option value="">請選擇排班時段</option>';
+
+  const nameOnly = selectedName.split('_')[1]; // 取得小名
+  const now = new Date();
+  const userRecords = records
+    .filter((r) => r.name === nameOnly)
+    .map((r) => new Date(r.time));
+
+  scheduleData.forEach((slot) => {
+    const slotTime = new Date(slot.time);
+    const slotKey = slot.time;
+    const remaining = (limits[slotKey] || 0) - records.filter((r) => r.time === slotKey).length;
+
+    const isDuplicate = userRecords.some((r) => r.getTime() === slotTime.getTime());
+
+    // 判斷是否違反連續 3 小時（允許排2小時 + 休息1小時）
+    const timestamps = userRecords.map(d => d.getTime());
+    timestamps.push(slotTime.getTime());
+    timestamps.sort();
+
+    let violates3hr = false;
+    for (let i = 0; i < timestamps.length - 2; i++) {
+      const diff1 = (timestamps[i+1] - timestamps[i]) / (1000 * 60 * 60);
+      const diff2 = (timestamps[i+2] - timestamps[i+1]) / (1000 * 60 * 60);
+      if (diff1 === 1 && diff2 === 1) {
+        violates3hr = true;
+        break;
+      }
+    }
+
+    if (
+      remaining > 0 &&
+      !isDuplicate &&
+      slotTime > now &&
+      !violates3hr
+    ) {
+      const option = document.createElement('option');
+      option.value = slot.time;
+      option.textContent = `${slot.time}（剩${remaining}）`;
+      scheduleSelect.appendChild(option);
+    }
+  });
+
     updateCancelOptions(records);
     updateTodaySchedule(records);
   });
