@@ -35,7 +35,7 @@ async function init() {
   renderAnnouncement(announcement);
 
   nicknameSelect.addEventListener("change", () => {
-    updateScheduleOptions(scheduleData, limits, records)
+    function updateScheduleOptions(scheduleData, limits, records)
 {
   const nameSelect = document.getElementById('name');
   const scheduleSelect = document.getElementById('schedule');
