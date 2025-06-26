@@ -1,4 +1,3 @@
-
 // schedule.js
 
 const sheetID = "1VITkwb0Sbn4dqxNd3h4SXT9YEesely8J9jydzgLzvaQ";
