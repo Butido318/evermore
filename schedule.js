@@ -35,7 +35,8 @@ async function init() {
   renderAnnouncement(announcement);
 
   nicknameSelect.addEventListener("change", () => {
-    function updateScheduleOptions(scheduleData, limits, records)
+console.log("排班資料", scheduleData);    
+function updateScheduleOptions(scheduleData, limits, records)
 {
   const nameSelect = document.getElementById('name');
   const scheduleSelect = document.getElementById('schedule');
