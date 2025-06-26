@@ -1,43 +1,37 @@
 // schedule.js
+// ✅ 設定 Google Apps Script 的網址（請改成你自己的 exec 網址）
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyu9QQgTe_06-DcKHGHv4YFQfc_42lf9V186cu6ZTPkMWuswTiQLW0vpEAs0OznyWAUAA/exec';
 
-const sheetID = "AKfycbyu9QQgTe_06-DcKHGHv4YFQfc_42lf9V186cu6ZTPkMWuswTiQLW0vpEAs0OznyWAUAA";
-const apiBase = `https://opensheet.elk.sh/${sheetID}`;
-
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  return res.json();
+// ✅ 載入小名選單
+function loadNames() {
+  fetch(`${GAS_URL}?action=names`)
+    .then(res => res.json())
+    .then(data => {
+      const nameSelect = document.getElementById('name');
+      nameSelect.innerHTML = '<option value="">請選擇小名</option>';
+      data.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name.value;
+        option.textContent = name.label;
+        nameSelect.appendChild(option);
+      });
+    });
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelector(`#${tab}-tab`).classList.add('active');
-  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`.tab-button[onclick*='${tab}']`).classList.add('active');
+// ✅ 載入排班選項
+function loadShifts(name) {
+  fetch(`${GAS_URL}?action=shifts&name=${encodeURIComponent(name)}`)
+    .then(res => res.json())
+    .then(data => {
+      updateScheduleOptions(data.scheduleData, data.scheduleLimits, data.scheduleRecords);
+    })
+    .catch(err => {
+      console.error('錯誤：無法載入班表時段', err);
+    });
 }
 
-async function init() {
-  const [names, scheduleData, records, limits, announcement] = await Promise.all([
-    fetchJSON(`${apiBase}/人員名單`),
-    fetchJSON(`${apiBase}/排班表`),
-    fetchJSON(`${apiBase}/紀錄表單`),
-    fetchJSON(`${apiBase}/時間上限`),
-    fetchJSON(`${apiBase}/公告區`)
-  ]);
-
-  const nicknameSelect = document.getElementById("nickname");
-  names.forEach(p => {
-    const option = document.createElement("option");
-    option.value = `${p["序號"]}_${p["小名"]}`;
-    option.textContent = `${p["序號"]}_${p["小名"]}`;
-    nicknameSelect.appendChild(option);
-  });
-
-  renderAnnouncement(announcement);
-
-  nicknameSelect.addEventListener("change", () => {
-console.log("排班資料", scheduleData);    
-function updateScheduleOptions(scheduleData, limits, records)
-{
+// ✅ 更新「我要排班」選單內容
+function updateScheduleOptions(scheduleData, limits, records) {
   const nameSelect = document.getElementById('name');
   const scheduleSelect = document.getElementById('schedule');
   const selectedName = nameSelect.value;
@@ -74,83 +68,32 @@ function updateScheduleOptions(scheduleData, limits, records)
       }
     }
 
-    if (
-      remaining > 0 &&
-      !isDuplicate &&
-      slotTime > now &&
-      !violates3hr
-    ) {
+    if (remaining > 0 && !isDuplicate && slotTime > now && !violates3hr) {
       const option = document.createElement('option');
       option.value = slot.time;
       option.textContent = `${slot.time}（剩${remaining}）`;
       scheduleSelect.appendChild(option);
     }
   });
+}
 
-    updateCancelOptions(records);
-    updateTodaySchedule(records);
+// ✅ 載入公告
+function loadAnnouncement() {
+  fetch(`${GAS_URL}?action=announcement`)
+    .then(res => res.text())
+    .then(text => {
+      document.getElementById('announcement').textContent = text;
+    });
+}
+
+// ✅ 初始化
+window.addEventListener('DOMContentLoaded', () => {
+  loadNames();
+  loadAnnouncement();
+
+  const nameSelect = document.getElementById('name');
+  nameSelect.addEventListener('change', () => {
+    const selected = nameSelect.value;
+    if (selected) loadShifts(selected);
   });
-
-  document.getElementById("shiftForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nickname = nicknameSelect.value;
-    const schedule = document.getElementById("schedule").value;
-    const cancel = document.getElementById("cancel").value;
-    let msg = "";
-    if (schedule && !cancel) {
-      msg = await submitRecord(nickname, schedule);
-    } else if (!schedule && cancel) {
-      msg = await cancelRecord(nickname, cancel);
-    } else {
-      msg = "請選擇一個時段進行排班或取消";
-    }
-    document.getElementById("responseMsg").innerText = msg;
-    nicknameSelect.dispatchEvent(new Event("change"));
-  });
-
-  document.getElementById("weekFilter").addEventListener("change", () => {
-    const custom = document.getElementById("weekFilter").value === 'custom';
-    document.getElementById("startDate").style.display = custom ? 'inline' : 'none';
-    document.getElementById("endDate").style.display = custom ? 'inline' : 'none';
-  });
-
-  renderStats();
-}
-
-function renderAnnouncement(data) {
-  const box = document.getElementById("announcement");
-  box.innerHTML = `<marquee>${data.map(d => d["內容"]).join(" ｜ ")}</marquee>`;
-}
-
-function updateScheduleOptions(scheduleData, limits, records) {
-  // TODO: 篩選剩餘、檢查不可重複、不可連續 3 小時邏輯
-}
-
-function updateCancelOptions(records) {
-  // TODO: 顯示登入者可取消的班表（僅限未來班表）
-}
-
-function updateTodaySchedule(records) {
-  // TODO: 顯示今日過後的班表（小名＋時段）
-}
-
-function submitRecord(name, slot) {
-  return fetch("https://script.google.com/macros/s/AKfycbz54L51159btyzitDS3fjbS9Axn4H-KuZ1xFVyBBp--yCVfRR-YtoW6Nc2gBkLvQDNe7Q/exec", {
-    method: "POST",
-    body: new URLSearchParams({ name, slot })
-  }).then(res => res.text());
-}
-
-function cancelRecord(name, slot) {
-  return fetch("https://script.google.com/macros/s/AKfycbz54L51159btyzitDS3fjbS9Axn4H-KuZ1xFVyBBp--yCVfRR-YtoW6Nc2gBkLvQDNe7Q/exec?action=cancel", {
-    method: "POST",
-    body: new URLSearchParams({ name, slot })
-  }).then(res => res.text());
-}
-
-function renderStats() {
-  // TODO: 根據篩選條件產生統計表格，含：剩餘名額、自己著色、反灰
-}
-
-document.addEventListener("DOMContentLoaded", init);
-
+});
