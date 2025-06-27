@@ -1,133 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>餘聲漫漫｜獎金試算表</title>
+  <meta charset="UTF-8">
+  <title>獎金試算表</title>
   <style>
-    body { font-family: "Noto Sans TC", sans-serif; margin: 0; padding: 1.5rem; background: #f3f6fa; color: #333; }
-
-<div class="navigation" style="display: flex; gap: 10px; margin-bottom: 1rem;">
-  <a id="nav-home" class="nav-button" style="padding: 10px 20px; background-color: # ffe58f; border-radius: 4px;">回首頁</a>
-  <a id="nav- schedule " class="nav-button" style="padding: 10px 20px; background-color: # 4ea1ff; border-radius: 4px;">前往排班</a>
-</div>
-
-
-
-    header { display: flex; align-items: center; justify-content: space-between; }
-    header img { height: 48px; }
-    h1 { margin: 0; font-size: 1.75rem; }
-    nav a { margin-left: 1rem; text-decoration: none; color: #336699; font-weight: bold; }
-    main { max-width: 600px; margin: 2rem auto; background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
-    label { display: block; margin: .75rem 0 .25rem; font-weight: 600; }
-    input { width: 100%; padding: .5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
-    button { margin-top: 1rem; width: 100%; padding: .75rem; font-size: 1rem; background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-    button:hover { background: #0056b3; }
-    #results { margin-top: 1.5rem; }
-    #results p { margin: .5rem 0; font-size: 1.1rem; }
-    #bonusTableBtn { margin-top: 1rem; background: #007bff; }
-    #bonusTable { display: none; margin-top: 1rem; background: #f9f9f9; padding: 1rem; border-radius: 6px; border: 1px solid #ddd; }
-    table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
-    th, td { border: 1px solid #ccc; padding: .5rem; text-align: center; }
-    h3 { margin-top: 1rem; }
+    body { font-family: sans-serif; padding: 2rem; }
+    .nav-button { padding: 8px 12px; margin: 0 6px; background: #eef; border-radius: 4px; text-decoration: none; }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="餘聲漫漫 LOGO">
-    <h1>獎金試算表</h1>
-    <nav>
-      <a href="schedule.html">前往排班</a>
-    </nav>
-  </header>
-
-  <main>
-    <label for="hours">輸入工作時數</label>
-    <input type="number" id="hours" placeholder="例如 25" />
-
-    <label for="diamonds">輸入鑽石數</label>
-    <input type="number" id="diamonds" placeholder="例如 40000" />
-
-    <button id="calcBtn">計算獎金</button>
-
-    <div id="results"></div>
-
-    <button id="bonusTableBtn">查看提成與獎金對照表</button>
-    <div id="bonusTable">
-      <h3>薪資 A 提成對照表</h3>
-      <table>
-        <thead><tr><th>時數區間</th><th>提成%</th></tr></thead>
-        <tbody>
-          <tr><td>0–25 小時</td><td>45%</td></tr>
-          <tr><td>26–40 小時</td><td>65%</td></tr>
-          <tr><td>41–60 小時</td><td>75%</td></tr>
-          <tr><td>61 小時以上</td><td>85%</td></tr>
-        </tbody>
-      </table>
-      <h3 style="margin-top:1rem;">鑽石提成對照表</h3>
-      <table>
-        <thead><tr><th>鑽石數</th><th>提成%</th></tr></thead>
-        <tbody>
-          <tr><td>0–10,000</td><td>45%</td></tr>
-          <tr><td>10,001–20,000</td><td>65%</td></tr>
-          <tr><td>20,001–50,000</td><td>75%</td></tr>
-          <tr><td>50,001 以上</td><td>85%</td></tr>
-        </tbody>
-      </table>
-      <h3 style="margin-top:1rem;">獎金 B 對照表（時數）</h3>
-      <table>
-        <thead><tr><th>時數</th><th>獎金 B</th></tr></thead>
-        <tbody>
-          <tr><td>≧ 30</td><td>$350</td></tr>
-          <tr><td>≧ 20</td><td>$200</td></tr>
-          <tr><td>≧ 10</td><td>$100</td></tr>
-          <tr><td>&lt; 10</td><td>$0</td></tr>
-        </tbody>
-      </table>
-      <h3 style="margin-top:1rem;">獎金 C 對照表（鑽石數）</h3>
-      <table>
-        <thead><tr><th>鑽石數</th><th>獎金 C</th></tr></thead>
-        <tbody>
-          <tr><td>≧ 80,000</td><td>$1000</td></tr>
-          <tr><td>≧ 50,000</td><td>$500</td></tr>
-          <tr><td>≧ 30,000</td><td>$300</td></tr>
-          <tr><td>&lt; 30,000</td><td>$0</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
-
-  <script>
-    document.getElementById("calcBtn").onclick = () => {
-      const h = Number(document.getElementById("hours").value);
-      const d = Number(document.getElementById("diamonds").value);
-      const unit = 0.27;
-
-      // 提成%
-      const pH = h > 60 ? 0.85 : h > 40 ? 0.75 : h > 25 ? 0.65 : 0.45;
-      const pD = d > 50000 ? 0.85 : d > 20000 ? 0.75 : d > 10000 ? 0.65 : 0.45;
-      const p = Math.max(pH, pD);
-
-      const salaryA = d * unit * p;
-      const bonusB = h >= 30 ? 350 : h >= 20 ? 200 : h >= 10 ? 100 : 0;
-      const bonusC = d >= 80000 ? 1000 : d >= 50000 ? 500 : d >= 30000 ? 300 : 0;
-      const total = salaryA + bonusB + bonusC;
-
-      const source = p === pH && pH > pD ? "時數" : "鑽石";
-
-      document.getElementById("results").innerHTML = `
-        <p>薪資 A：$${salaryA.toFixed(2)} （採用${source}提成）</p>
-        <p>獎金 B：$${bonusB}</p>
-        <p>獎金 C：$${bonusC}</p>
-        <hr>
-        <p><strong>總計：$${total.toFixed(2)}</strong></p>
-      `;
-    };
-
-    document.getElementById("bonusTableBtn").onclick = () => {
-      const tbl = document.getElementById("bonusTable");
-      tbl.style.display = tbl.style.display === "none" ? "block" : "none";
-    };
-  </script>
+  <h1>獎金試算表</h1>
+  <div>
+    <a href="index.html" class="nav-button">回首頁</a>
+    <a href="schedule.html" class="nav-button">排班系統</a>
+  </div>
+  <!-- 請在這裡加入試算功能 -->
 </body>
 </html>
