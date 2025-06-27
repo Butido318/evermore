@@ -1,5 +1,3 @@
-// schedule.js
-
 const sheetID = "1VITkwb0Sbn4dqxNd3h4SXT9YEesely8J9jydzgLzvaQ";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyu9QQgTe_06-DcKHGHv4YFQfc_42lf9V186cu6ZTPkMWuswTiQLW0vpEAs0OznyWAUAA/exec";
 
@@ -18,7 +16,6 @@ async function loadInitialData() {
   const announcementBox = document.getElementById("announcement");
 
   try {
-    // 載入小名
     const namesRes = await fetch(`${GAS_URL}?action=names`);
     const names = await namesRes.json();
     nicknameSelect.innerHTML = '<option value="">請選擇小名</option>';
@@ -29,7 +26,6 @@ async function loadInitialData() {
       nicknameSelect.appendChild(opt);
     });
 
-    // 載入公告
     const annRes = await fetch(`${GAS_URL}?action=announcement`);
     const annText = await annRes.text();
     announcementBox.innerHTML = `<marquee>${annText}</marquee>`;
@@ -37,7 +33,6 @@ async function loadInitialData() {
     console.error("初始化資料載入失敗：", err);
   }
 
-  // 綁定事件：小名選擇後載入班表
   nicknameSelect.addEventListener("change", async () => {
     const name = nicknameSelect.value;
     if (!name) return;
@@ -66,7 +61,6 @@ async function loadInitialData() {
     }
   });
 
-  // 表單送出處理
   document.getElementById("shiftForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = nicknameSelect.value;

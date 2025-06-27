@@ -1,41 +1,21 @@
-
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF- />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>排班申請</title>
-  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <img src="logo.png" alt="餘聲漫漫 LOGO" class="logo" />
-    <h1>排班申請</h1>
-    <nav>
-      <a href="index.html">首頁</a>
-      <a href="schedule.html" class="active">排班系統</a>
-      <a href="bonus.html">獎金試算</a>
-    </nav>
-    <div id="announcement"></div>
-  </header>
+<body style="font-family: sans-serif; padding: 20px;">
+  <h1>排班申請</h1>
+  <div id="announcement" style="background:#eef; padding:10px; margin:10px 0;"></div>
 
-  <main>
-    <section>
-      <form id="shiftForm">
-        <label for="nickname">請選擇小名：</label>
-        <select id="nickname"><option>載入中...</option></select>
-
-        <label for="schedule">我要排班：</label>
-        <select id="schedule"><option>請先選小名</option></select>
-
-        <label for="cancel">我要取消：</label>
-        <select id="cancel"><option>請先選小名</option></select>
-
-        <button type="submit">送出</button>
-      </form>
-      <p id="responseMsg"></p>
-    </section>
-  </main>
+  <form id="shiftForm">
+    <label>請選擇小名：<select id="nickname"></select></label><br><br>
+    <label>我要排班：<select id="schedule"></select></label><br><br>
+    <label>我要取消：<select id="cancel"></select></label><br><br>
+    <button type="submit">送出</button>
+  </form>
+  <div id="responseMsg" style="margin-top:10px;color:blue;"></div>
 
   <script src="schedule.js"></script>
 </body>

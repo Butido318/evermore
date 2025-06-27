@@ -2,22 +2,29 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>餘聲漫漫｜排班系統</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>首頁</title>
 </head>
-<body>
-  <header>
-    <img src="logo.png" alt="餘聲漫漫 Logo" class="logo" />
-    <h1>排班申請</h1>
-    <nav>
-      <a href="index.html">首頁</a>
-      <a href="schedule.html">排班</a>
-    </nav>
-  </header>
-  <main>
-    <h2>歡迎來到餘聲漫漫</h2>
-    <p>請從上方選單進入排班功能。</p>
-  </main>
+<body style="font-family: sans-serif; padding: 20px;">
+  <h1>首頁</h1>
+
+  <!-- 公告欄 -->
+  <div id="announcement" style="background:#eef; padding:10px; margin:10px 0;">
+    <marquee>公告載入中...</marquee>
+  </div>
+
+  <!-- 導引按鈕 -->
+  <div style="margin-top: 20px;">
+    <a href="bonus.html" style="background:#4ea1ff; color:white; padding:10px 20px; margin-right:10px; text-decoration:none;">查看獎金試算表</a>
+    <a href="schedule.html" style="background:#ffe58f; padding:10px 20px; text-decoration:none;">前往排班</a>
+  </div>
+
+  <script>
+    fetch("https://script.google.com/macros/s/AKfycbyu9QQgTe_06-DcKHGHv4YFQfc_42lf9V186cu6ZTPkMWuswTiQLW0vpEAs0OznyWAUAA/exec?action=announcement")
+      .then(res => res.text())
+      .then(txt => {
+        document.getElementById("announcement").innerHTML = `<marquee>${txt}</marquee>`;
+      });
+  </script>
 </body>
 </html>
